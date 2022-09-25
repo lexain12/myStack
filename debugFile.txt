@@ -1,0 +1,75 @@
+stackCtorFunc at ./stack.h(175);
+stack[0x16dd0f758] (ok) Name = stk3 at function main at file main.cpp(9)
+{                 
+    size        = 0
+    capacity    = 10
+    leftCanary  = 0xdeadbeef
+    rightCanary = 0xdedfade
+
+    fullData [0x600002d54020]
+    {
+         leftDataCanary = 0xcafebabe
+         [0] = POISONED
+         [1] = POISONED
+         [2] = POISONED
+         [3] = POISONED
+         [4] = POISONED
+         [5] = POISONED
+         [6] = POISONED
+         [7] = POISONED
+         [8] = POISONED
+         [9] = POISONED
+         rightDataCanary = 0xcafed00d
+    }
+}
+----------------------------------------------------------
+main at main.cpp(11);
+stack[0x16dd0f758] (ok) Name = stk3 at function main at file main.cpp(9)
+{                 
+    size        = 0
+    capacity    = 10
+    leftCanary  = 0xdeadbeef
+    rightCanary = 0xdedfade
+
+    fullData [0x600002d54020]
+    {
+         leftDataCanary = 0xcafebabe
+         [0] = POISONED
+         [1] = POISONED
+         [2] = POISONED
+         [3] = POISONED
+         [4] = POISONED
+         [5] = POISONED
+         [6] = POISONED
+         [7] = POISONED
+         [8] = POISONED
+         [9] = POISONED
+         rightDataCanary = 0xcafed00d
+    }
+}
+----------------------------------------------------------
+main at main.cpp(17);
+stack[0x16dd0f758] (ok) Name = stk3 at function main at file main.cpp(9)
+{                 
+    size        = 5
+    capacity    = 10
+    leftCanary  = 0xdeadbeef
+    rightCanary = 0xdedfade
+
+    fullData [0x600002d54020]
+    {
+         leftDataCanary = 0xcafebabe
+        *[0] = 7
+        *[1] = 7
+        *[2] = 7
+        *[3] = 7
+        *[4] = 7
+         [5] = POISONED
+         [6] = POISONED
+         [7] = POISONED
+         [8] = POISONED
+         [9] = POISONED
+         rightDataCanary = 0xcafed00d
+    }
+}
+----------------------------------------------------------
