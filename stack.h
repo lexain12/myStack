@@ -30,12 +30,19 @@ FILE* const dbgOpen(const char*);
 
 FILE* const DBGFILEPTR = dbgOpen(DBGFILENAME);
 
+enum StackStatus
+{
+    statusAlive = 0,
+    statusDead  = 1,
+};
+
 struct DebugInf
 {
     const char*  bornName; 
     const char*  bornFunction;
     const char*  bornFile;
     size_t bornLine;
+    StackStatus stackStatus;
 };
 
 struct Stack_t
@@ -44,6 +51,7 @@ struct Stack_t
     size_t  size;
     size_t  capacity; 
     unsigned long long* leftDataCanary;
+    char* fullData;
     Elem_t* data;
     unsigned long long* rightDataCanary;
     DebugInf debugInf;
@@ -64,9 +72,26 @@ enum Errors
     rightCanaryError     = 1 << 8,
     leftDataCanaryError  = 1 << 9,
     rightDataCanaryError = 1 << 10,
+    stackResizeError     = 1 << 11,
+    memAllocError        = 1 << 12,
 };
 
-void stackPoison(Stack_t*);
+const char* ErrorMessages[] = {
+    "No errors :)",
+    "Wrong ptr on structure with stack",
+    "Wrong capacity",
+    "No pointer on data (stack with elements)",
+    "Size bigger than capacity => problem with stack size",
+    "Can't realloc up",
+    "Can't realloc down",
+    "Left canary died :( RIP",
+    "Oh no, we lost right canary",
+    "leftDataCanary is damaged",
+    "rightDataCanary is damaged", 
+
+};
+
+void arrayPoison(Elem_t*, size_t);
 
 int stackCtorFunc(Stack_t* stk, size_t capacity, const char* stkName, const char* funcName, const char* fileName, const int line);
 
@@ -80,8 +105,9 @@ int stackPush(Stack_t* stk, Elem_t value);
 
 Elem_t stackPop(Stack_t* stk, int* errors = nullptr);
 
-Elem_t* stackRecalloc(Stack_t* stk, int param);
+int stackResize(Stack_t* stk, int param);
 
+void errorPrint(int errors);
 //-------------------------------------------------------
 
 FILE* const dbgOpen(const char* dbgFileName)
@@ -141,40 +167,54 @@ void print(double param)
 
 //----------------------------------------------------------------
 
-void stackPoison(Stack_t* stk)
+void arrayPoison(Elem_t* data, size_t limiter)
 {
-    for (size_t index = 0; index < stk->capacity; ++index)
+    for (size_t index = 0; index < limiter; ++index)
     {
-        stk->data[index] = getPoison(stk->data[0]);
+        data[index] = getPoison(data[0]);
     }
 }
 
 int stackCtorFunc(Stack_t* stk, size_t capacity, const char* stkName, const char* funcName, const char* fileName, const int line)
 {
-    // ASSERTOK()
-    assert(stk != nullptr);
-    assert(capacity != 0);
-
-    void* fullData             = calloc(1, capacity * sizeof(Elem_t) + 2 * sizeof(stk->leftDataCanary));
-    stk->data                  = (Elem_t*) fullData + sizeof(stk->leftDataCanary);
-    stk->leftDataCanary        = (unsigned long long*) fullData;
-    stk->rightDataCanary       = (unsigned long long*) fullData + sizeof(stk->leftDataCanary) + sizeof(Elem_t) * capacity;
-    *(stk->leftDataCanary)     = 0xCAFEBABE;
-    *(stk->rightDataCanary)    = 0xCAFED00D;
-
+    int errors = 0;
+    
+    if (stk == nullptr) 
+        return errors |= stkptrError;
+   
+    capacity                   = (capacity == 0 ? 0 : (capacity / 10 + 1) * 10);
     stk->capacity              = capacity;
     stk->size                  = 0;
+    stackDump(stk, 0);
+
+    if (capacity != 0)  
+    {
+        stk->fullData          = (char*) calloc(1, capacity * sizeof(Elem_t) + 2 * sizeof(unsigned long long));
+
+        if (stk->fullData == nullptr)
+            return errors |= memAllocError;
+
+        stk->data              = (Elem_t*) (stk->fullData + sizeof(unsigned long long));
+        stk->leftDataCanary    = (unsigned long long*) stk->fullData;
+        stk->rightDataCanary   = (unsigned long long*) (stk->fullData + sizeof(unsigned long long) + sizeof(Elem_t) * capacity);
+
+    }
+
+    *(stk->leftDataCanary)     = 0xCAFEBABE;
+    *(stk->rightDataCanary)    = 0xCAFED00D;
     stk->debugInf.bornName     = stkName;
     stk->debugInf.bornFunction = funcName;
     stk->debugInf.bornFile     = fileName;
     stk->debugInf.bornLine     = line;
+    stk->debugInf.stackStatus  = statusAlive;
 
+    stackDump(stk, 0);
 
-    stackPoison(stk);
+    arrayPoison(stk->data, stk->capacity);
 
-    stackDump(stk, stackError(stk));
+    stackDump(stk, errors |= stackError(stk));
 
-    return 0;
+    return errors;
 }
 
 int stackDtor(Stack_t* stk)
@@ -190,8 +230,11 @@ int stackDtor(Stack_t* stk)
     stk->debugInf.bornFunction    = nullptr;
     stk->debugInf.bornFile        = nullptr;
     stk->debugInf.bornLine        = 0xDED32DED;
-    free(stk->data);
+    free(stk->fullData);
+    stk->debugInf.stackStatus     = statusDead;
     stk->data                     = nullptr;
+    stk->fullData                 = nullptr;
+    free(stk);
 
     return 0;
 }
@@ -199,13 +242,15 @@ int stackDtor(Stack_t* stk)
 int stackError(Stack_t* stk)
 {
     assert(stk != nullptr);
+    size_t epsiloh = -400;
+
     int errors = noErrors;
     if (stk)
     {
-        if (isnan(stk->capacity) || stk->capacity < 0)
+        if (isnan(stk->capacity) || stk->capacity > epsiloh)
             errors |= capacityError;
         
-        if (stk->size < 0)
+        if (stk->size > epsiloh)
             errors |= sizeError;
 
         if (!stk->data)
@@ -234,17 +279,25 @@ int stackError(Stack_t* stk)
 
 void stackDumpFunc(const Stack_t* stk, int errors, int line, const char* func, const char* file, FILE* dbgFile)
 {
+    fprintf(dbgFile, "-----------------stackDump----------------\n");
     fprintf(dbgFile, "%s at ",     func);
     fprintf(dbgFile, "%s",         file);
     fprintf(dbgFile, "(%d);\n",    line);
     fprintf(dbgFile, "stack[%p] ", stk);
+    if (stk->debugInf.stackStatus)
+        fprintf(dbgFile, "status: Dead ");
+    else
+        fprintf(dbgFile, "status: Alive ");
     
     if (errors)
-        fprintf(dbgFile, "(ERROR: %d)", errors);
+    {
+        fprintf(dbgFile, "(ERROR: %d)\n", errors);
+        errorPrint(errors);
+    }
     else
-        fprintf(dbgFile, "(ok) ");
+        fprintf(dbgFile, "(no errors) ");
     fprintf(dbgFile, "Name = %s ", stk->debugInf.bornName); 
-    fprintf(dbgFile, "at function %s at file %s(%d)\n", stk->debugInf.bornFunction, stk->debugInf.bornFile, stk->debugInf.bornLine);
+    fprintf(dbgFile, "at function %s at file %s(%lu)\n", stk->debugInf.bornFunction, stk->debugInf.bornFile, stk->debugInf.bornLine);
 
     if (stk)
     {
@@ -256,7 +309,7 @@ void stackDumpFunc(const Stack_t* stk, int errors, int line, const char* func, c
         
         if (stk->data)
         {
-            fprintf(dbgFile, "    fullData [%p]\n    {\n", stk->data);
+            fprintf(dbgFile, "    fullData [%p] data[%p]\n    {\n", stk->fullData, stk->data);
             fprintf(dbgFile, "         leftDataCanary = %p\n", *(stk->leftDataCanary));
             for (size_t index = 0; index < stk->capacity; ++index)
             {
@@ -287,7 +340,7 @@ void stackDumpFunc(const Stack_t* stk, int errors, int line, const char* func, c
     else
         fprintf(dbgFile, "Wrong ptr on stack\n");
 
-    fprintf(dbgFile, "----------------------------------------------------------\n");
+    fprintf(dbgFile, "-----------stackDump-End------------------\n");
 
 }
 
@@ -301,23 +354,11 @@ int stackPush(Stack_t* stk, Elem_t value)
     }
     else
     {
+        if (stk->size >= stk->capacity)
+        {
+            stackResize(stk, _UP);
+        }
         (stk->data)[stk->size++] = value;
-//        if (stk->size >= stk->capacity)
-//        {
-//            Elem_t* newptr = stackRecalloc(stk, _UP);
-//
-//            if (newptr)
-//            {
-//                stk->capacity *= 2;
-//                free(stk->data);
-//                stk->data = newptr;
-//            }
-//            else
-//            {
-//                errors |= recallocUpError;
-//                return errors;         
-//            }
-//        }
     }
     
     return stackError(stk);
@@ -328,14 +369,21 @@ Elem_t stackPop(Stack_t* stk, int* errors)
     if (int _errors = stackError(stk))
     {
         stackDump(stk, _errors);
-
         if (errors) *errors = _errors;
     }
     else
     {
+        if (stk->size <= stk->capacity / 2 - (stk->capacity / 4) && stk->capacity > 10)
+        {
+            _errors |= stackResize(stk, _DOWN);
+            stk->capacity /= 2;
+        }
+
         stk->size--;
         Elem_t elem = stk->data[stk->size];
         stk->data[stk->size] =getPoison(elem);
+
+        if (errors) *errors |= _errors;
 
         return elem;
     }
@@ -343,13 +391,49 @@ Elem_t stackPop(Stack_t* stk, int* errors)
     return stk->data[0];
 }
 
-//Elem_t* stackRecalloc(Stack_t* stk, int param)
-//{
-//    if (param)
-//    {
-//        return (Elem_t*) recalloc(stk->data, stk->capacity/2, sizeof(stk->data[0]));
-//    }
-//    
-//    return (Elem_t*) recalloc(stk->data, stk->capacity*2, sizeof(stk->data[0]));
-//}
+int stackResize(Stack_t* stk, int param)
+{
+    int errors = 0;
+    stackDump(stk, errors = stackError(stk));
+
+    if (param)
+        stk->capacity /= 2;
+    else
+        stk->capacity *= 2;
+
+    if (char* newData = (char*) realloc(stk->fullData, sizeof(stk->data[0]) * stk->capacity + sizeof(unsigned long long) * 2))
+        stk->fullData = newData;
+    else
+        errors |= stackResizeError;
+
+    stk->data                  = (Elem_t*) (stk->fullData + sizeof(unsigned long long));
+    arrayPoison(stk->data + stk->size, stk->capacity - stk->size);
+
+    stk->leftDataCanary        = (unsigned long long*) stk->fullData;
+    stk->rightDataCanary       = (unsigned long long*) (stk->fullData + sizeof(unsigned long long) + sizeof(Elem_t) * stk->capacity);
+    *(stk->leftDataCanary)     = 0xCAFEBABE;
+    *(stk->rightDataCanary)    = 0xCAFED00D;
+    stackDump(stk, errors |= stackError(stk));
+
+    return errors;
+}
+
+void errorPrint(int errors)
+{
+    int curError = 1;
+
+    size_t index = 0;
+
+    fprintf(DBGFILEPTR, "-----------------Errors-------------------\n");
+    while (curError <= errors)
+    {
+        if (curError & errors)
+        {
+            fprintf(DBGFILEPTR, "    Error[%d] - %s\n", curError, ErrorMessages[index]);
+        }
+        curError <<= 1;
+        index += 1;
+    }
+    fprintf(DBGFILEPTR, "-------------End-of-errors----------------\n");
+}
 

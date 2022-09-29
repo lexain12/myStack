@@ -1,121 +1,154 @@
----------------Sat Sep 24 01:39:37 2022---------------
-FILE: main.cpp, Function: main, line: 5
-stackCtor(&stk1, 10) Return value = ---------------Sat Sep 24 01:40:16 2022---------------
-FILE: main.cpp, Function: main, line: 5
----------------Sat Sep 24 01:42:31 2022---------------
-FILE: main.cpp, Function: main, line: 5
-FILE: stack.cpp, Function: stackDumpFunc, line: 132
----------------Sat Sep 24 02:15:28 2022---------------
-FILE: main.cpp, Function: main, line: 5
-FILE: stack.cpp, Function: stackDumpFunc, line: 132
----------------Sat Sep 24 02:16:36 2022---------------
-FILE: main.cpp, Function: main, line: 5
-FILE: stack.cpp, Function: stackDumpFunc, line: 132
-FILE: stack.cpp, Function: stackDumpFunc, line: 132
-FILE: stack.cpp, Function: stackDumpFunc, line: 132
----------------Sat Sep 24 02:17:33 2022---------------
-FILE: main.cpp, Function: main, line: 5
----------------Sat Sep 24 02:18:01 2022---------------
-FILE: main.cpp, Function: main, line: 5
----------------Sat Sep 24 02:18:12 2022---------------
-FILE: main.cpp, Function: main, line: 5
----------------Sat Sep 24 02:19:28 2022---------------
-FILE: main.cpp, Function: main, line: 5
----------------Sat Sep 24 02:20:24 2022---------------
-FILE: main.cpp, Function: main, line: 5
-FILE: stack.cpp, Function: stackPush, line: 152
----------------Sat Sep 24 02:21:07 2022---------------
-FILE: main.cpp, Function: main, line: 5
-FILE: stack.cpp, Function: stackPush, line: 152
----------------Sat Sep 24 02:21:53 2022---------------
-FILE: main.cpp, Function: main, line: 5
-FILE: stack.cpp, Function: stackPush, line: 152
-FILE: stack.cpp, Function: stackPush, line: 154
----------------Sat Sep 24 02:23:50 2022---------------
-FILE: main.cpp, Function: main, line: 5
-FILE: stack.cpp, Function: stackPush, line: 152
-FILE: stack.cpp, Function: stackPush, line: 154
----------------Sat Sep 24 02:26:11 2022---------------
-FILE: main.cpp, Function: main, line: 5
-FILE: stack.cpp, Function: stackPush, line: 153
-FILE: stack.cpp, Function: stackPush, line: 155
----------------Sat Sep 24 02:28:22 2022---------------
-FILE: main.cpp, Function: main, line: 5
-FILE: stack.cpp, Function: stackPush, line: 152
-FILE: stack.cpp, Function: stackPush, line: 154
----------------Sat Sep 24 02:30:07 2022---------------
-FILE: main.cpp, Function: main, line: 5
-FILE: stack.cpp, Function: stackPush, line: 152
-FILE: stack.cpp, Function: stackPush, line: 154
----------------Sat Sep 24 02:30:39 2022---------------
-FILE: main.cpp, Function: main, line: 5
-FILE: stack.cpp, Function: stackPush, line: 152
-FILE: stack.cpp, Function: stackPush, line: 154
----------------Sat Sep 24 02:31:45 2022---------------
-FILE: main.cpp, Function: main, line: 5
-FILE: stack.cpp, Function: stackPush, line: 152
-FILE: stack.cpp, Function: stackPush, line: 154
----------------Sat Sep 24 10:55:44 2022---------------
+---------------Mon Sep 26 12:09:19 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 10:57:37 2022---------------
+FILE: ./stack.h, Function: stackResize, line: 341
+---------------Mon Sep 26 12:11:18 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 11:27:54 2022---------------
+FILE: ./stack.h, Function: stackResize, line: 341
+---------------Mon Sep 26 18:39:07 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 11:40:25 2022---------------
+FILE: ./stack.h, Function: stackResize, line: 343
+---------------Mon Sep 26 18:41:14 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 12:04:48 2022---------------
+FILE: ./stack.h, Function: stackResize, line: 343
+---------------Mon Sep 26 18:42:49 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 12:05:34 2022---------------
+FILE: ./stack.h, Function: stackResize, line: 343
+---------------Mon Sep 26 18:44:17 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 12:06:14 2022---------------
+FILE: ./stack.h, Function: stackResize, line: 343
+---------------Mon Sep 26 18:45:42 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 12:09:48 2022---------------
+FILE: ./stack.h, Function: stackResize, line: 345
+---------------Mon Sep 26 18:48:37 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 12:11:33 2022---------------
+---------------Mon Sep 26 18:49:48 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 12:12:18 2022---------------
+---------------Mon Sep 26 18:50:45 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 12:13:30 2022---------------
+---------------Mon Sep 26 19:00:02 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 12:35:10 2022---------------
+---------------Mon Sep 26 19:07:20 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 12:36:10 2022---------------
+---------------Mon Sep 26 19:10:46 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 13:40:01 2022---------------
+---------------Mon Sep 26 19:15:12 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 13:40:28 2022---------------
+---------------Mon Sep 26 19:17:28 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 13:43:20 2022---------------
+---------------Mon Sep 26 19:17:54 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 13:55:05 2022---------------
+---------------Mon Sep 26 19:20:29 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 13:55:19 2022---------------
+---------------Mon Sep 26 19:23:54 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 13:58:30 2022---------------
+---------------Mon Sep 26 19:25:00 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 13:58:45 2022---------------
+---------------Mon Sep 26 19:28:04 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sat Sep 24 13:59:05 2022---------------
+---------------Mon Sep 26 19:40:32 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sun Sep 25 21:49:28 2022---------------
+---------------Mon Sep 26 19:42:22 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sun Sep 25 21:59:34 2022---------------
+---------------Mon Sep 26 19:43:07 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sun Sep 25 22:00:19 2022---------------
+---------------Mon Sep 26 19:56:20 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sun Sep 25 22:01:54 2022---------------
+---------------Mon Sep 26 20:00:51 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sun Sep 25 22:02:37 2022---------------
+---------------Mon Sep 26 20:01:40 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sun Sep 25 22:06:43 2022---------------
+---------------Mon Sep 26 20:09:06 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sun Sep 25 22:17:49 2022---------------
+---------------Mon Sep 26 20:20:05 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sun Sep 25 22:45:11 2022---------------
+---------------Mon Sep 26 20:21:07 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sun Sep 25 23:47:50 2022---------------
+---------------Tue Sep 27 19:04:49 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sun Sep 25 23:51:53 2022---------------
+---------------Tue Sep 27 19:07:19 2022---------------
 FILE: main.cpp, Function: main, line: 7
----------------Sun Sep 25 23:53:15 2022---------------
+---------------Tue Sep 27 19:08:00 2022---------------
 FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 19:08:15 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 19:09:40 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 19:10:24 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 19:20:40 2022---------------
+FILE: main.cpp, Function: main, line: 10
+---------------Tue Sep 27 19:20:59 2022---------------
+FILE: main.cpp, Function: main, line: 10
+---------------Tue Sep 27 20:06:57 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 20:07:51 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 20:08:39 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 20:09:41 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 20:11:14 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 20:13:42 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 20:14:48 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 20:15:20 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 20:15:58 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 21:42:32 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 21:45:09 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 22:36:05 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 22:37:01 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 22:37:51 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 22:40:09 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 22:42:23 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 22:44:25 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Tue Sep 27 22:45:20 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Wed Sep 28 15:59:52 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Wed Sep 28 16:04:03 2022---------------
+FILE: main.cpp, Function: main, line: 7
+---------------Wed Sep 28 16:07:33 2022---------------
+FILE: main.cpp, Function: main, line: 7
+FILE: stack.h, Function: stackDumpFunc, line: 331
+---------------Wed Sep 28 16:10:40 2022---------------
+FILE: main.cpp, Function: main, line: 7
+FILE: stack.h, Function: stackDumpFunc, line: 331
+---------------Wed Sep 28 16:14:07 2022---------------
+FILE: main.cpp, Function: main, line: 7
+FILE: stack.h, Function: stackDumpFunc, line: 331
+---------------Wed Sep 28 16:14:32 2022---------------
+FILE: main.cpp, Function: main, line: 7
+FILE: stack.h, Function: stackDumpFunc, line: 331
+---------------Wed Sep 28 16:16:35 2022---------------
+FILE: main.cpp, Function: main, line: 7
+FILE: stack.h, Function: stackDumpFunc, line: 331
+---------------Wed Sep 28 16:16:59 2022---------------
+FILE: main.cpp, Function: main, line: 7
+FILE: stack.h, Function: stackDumpFunc, line: 331
+---------------Wed Sep 28 16:17:24 2022---------------
+FILE: main.cpp, Function: main, line: 7
+FILE: stack.h, Function: stackDumpFunc, line: 331
+---------------Wed Sep 28 16:19:25 2022---------------
+FILE: main.cpp, Function: main, line: 7
+FILE: stack.h, Function: stackDumpFunc, line: 331
+---------------Wed Sep 28 16:21:01 2022---------------
+FILE: main.cpp, Function: main, line: 7
+FILE: stack.h, Function: stackDumpFunc, line: 332
+---------------Wed Sep 28 16:24:58 2022---------------
+FILE: main.cpp, Function: main, line: 7
+FILE: stack.h, Function: stackDumpFunc, line: 332
+---------------Wed Sep 28 16:28:32 2022---------------
+FILE: main.cpp, Function: main, line: 7
+FILE: stack.h, Function: stackDumpFunc, line: 334
