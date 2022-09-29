@@ -1,124 +1,52 @@
 -----------------stackDump----------------
 stackCtorFunc at stack.h(197);
-stack[0x16cf8b748] status: Alive (no errors) Name = (null) at function (null) at file (null)(0)
+stack[0x16ce3b748] status: Alive (no errors) Name = (null) at function (null) at file (null)(0)
 {                 
     size        = 0
-    capacity    = 20
+    capacity    = 0
     leftCanary  = 0xdeadbeef
     rightCanary = 0xdedfade
     structHash  = 0
-    dataHash    = 0
 fullData [0x0] NULLPTR
  {}
 -----------stackDump-End------------------
 -----------------stackDump----------------
-stackCtorFunc at stack.h(220);
-stack[0x16cf8b748] status: Alive (no errors) Name = stk3 at function main at file main.cpp(9)
+stackCtorFunc at stack.h(223);
+stack[0x16ce3b748] status: Alive (no errors) Name = stk3 at function main at file main.cpp(9)
 {                 
     size        = 0
-    capacity    = 20
+    capacity    = 0
     leftCanary  = 0xdeadbeef
     rightCanary = 0xdedfade
     structHash  = 0
-    dataHash    = 0
-    fullData [0x600002610000] data[0x600002610008]
-    {
-         leftDataCanary = 0xcafebabe
-        *[0] = 0
-        *[1] = 0
-        *[2] = 0
-        *[3] = 0
-        *[4] = 0
-        *[5] = 0
-        *[6] = 0
-        *[7] = 0
-        *[8] = 0
-        *[9] = 0
-        *[10] = 0
-        *[11] = 0
-        *[12] = 0
-        *[13] = 0
-        *[14] = 0
-        *[15] = 0
-        *[16] = 0
-        *[17] = 0
-        *[18] = 0
-        *[19] = 0
-         rightDataCanary = 0xcafed00d
-    }
-}
+fullData [0x0] NULLPTR
+ {}
 -----------stackDump-End------------------
-adsfadsfasdf 421166141-----------------stackDump----------------
-stackCtorFunc at stack.h(229);
-stack[0x16cf8b748] status: Alive (no errors) Name = stk3 at function main at file main.cpp(9)
+-----------------stackDump----------------
+stackCtorFunc at stack.h(228);
+stack[0x16ce3b748] status: Alive (ERROR: 4)
+-----------------Errors-------------------
+    Error[4] - Wrong capacity
+-------------End-of-errors----------------
+Name = stk3 at function main at file main.cpp(9)
 {                 
     size        = 0
-    capacity    = 20
+    capacity    = 0
     leftCanary  = 0xdeadbeef
     rightCanary = 0xdedfade
-    structHash  = 17770403586775874621
-    dataHash    = 17949869023345001484
-    fullData [0x600002610000] data[0x600002610008]
-    {
-         leftDataCanary = 0xcafebabe
-         [0] = POISONED
-         [1] = POISONED
-         [2] = POISONED
-         [3] = POISONED
-         [4] = POISONED
-         [5] = POISONED
-         [6] = POISONED
-         [7] = POISONED
-         [8] = POISONED
-         [9] = POISONED
-         [10] = POISONED
-         [11] = POISONED
-         [12] = POISONED
-         [13] = POISONED
-         [14] = POISONED
-         [15] = POISONED
-         [16] = POISONED
-         [17] = POISONED
-         [18] = POISONED
-         [19] = POISONED
-         rightDataCanary = 0xcafed00d
-    }
-}
+    structHash  = 7972972173961262548
+fullData [0x0] NULLPTR
+ {}
 -----------stackDump-End------------------
 -----------------stackDump----------------
 main at main.cpp(10);
-stack[0x16cf8b748] status: Alive (no errors) Name = stk3 at function main at file main.cpp(9)
+stack[0x16ce3b748] status: Alive (no errors) Name = stk3 at function main at file main.cpp(9)
 {                 
     size        = 0
-    capacity    = 20
+    capacity    = 0
     leftCanary  = 0xdeadbeef
     rightCanary = 0xdedfade
-    structHash  = 17770403586775874621
-    dataHash    = 17949869023345001484
-    fullData [0x600002610000] data[0x600002610008]
-    {
-         leftDataCanary = 0xcafebabe
-         [0] = POISONED
-         [1] = POISONED
-         [2] = POISONED
-         [3] = POISONED
-         [4] = POISONED
-         [5] = POISONED
-         [6] = POISONED
-         [7] = POISONED
-         [8] = POISONED
-         [9] = POISONED
-         [10] = POISONED
-         [11] = POISONED
-         [12] = POISONED
-         [13] = POISONED
-         [14] = POISONED
-         [15] = POISONED
-         [16] = POISONED
-         [17] = POISONED
-         [18] = POISONED
-         [19] = POISONED
-         rightDataCanary = 0xcafed00d
-    }
-}
+    structHash  = 7972972173961262548
+fullData [0x0] NULLPTR
+ {}
 -----------stackDump-End------------------

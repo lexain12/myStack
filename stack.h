@@ -206,11 +206,14 @@ int stackCtorFunc(Stack_t* stk, size_t capacity, const char* stkName, const char
         stk->data              = (Elem_t*) (stk->fullData + sizeof(unsigned long long));
         stk->leftDataCanary    = (unsigned long long*) stk->fullData;
         stk->rightDataCanary   = (unsigned long long*) (stk->fullData + sizeof(unsigned long long) + sizeof(Elem_t) * capacity);
+        *(stk->leftDataCanary)     = 0xCAFEBABE;
+        *(stk->rightDataCanary)    = 0xCAFED00D;
 
+        arrayPoison(stk->data, stk->capacity);
+        size_t dataHash            = countHash((char*) stk->data, sizeof(Elem_t) * stk->capacity);
+        stk->debugInf.dataHash     = dataHash;
     }
 
-    *(stk->leftDataCanary)     = 0xCAFEBABE;
-    *(stk->rightDataCanary)    = 0xCAFED00D;
     stk->debugInf.bornName     = stkName;
     stk->debugInf.bornFunction = funcName;
     stk->debugInf.bornFile     = fileName;
@@ -219,21 +222,19 @@ int stackCtorFunc(Stack_t* stk, size_t capacity, const char* stkName, const char
 
     stackDump(stk, 0);
 
-    arrayPoison(stk->data, stk->capacity);
     size_t structHash          = countHash((char*) stk, sizeof(Stack_t));
-    size_t dataHash            = countHash((char*) stk->data, sizeof(Elem_t) * stk->capacity);
-    fprintf(DBGFILEPTR, "adsfadsfasdf %d", structHash);
     stk->debugInf.structHash   = structHash;
-    stk->debugInf.dataHash     = dataHash;
-
+$;
     stackDump(stk, errors |= stackError(stk));
-
+$;
     return errors;
 }
 
 int stackDtor(Stack_t* stk)
 {
-    assert(stk != nullptr);
+    if (stk)
+        stackError(stk); // Abort?
+
     stk->capacity                 = 0xDED32DED; // base
     stk->size                     = 0xDED32DED;
     *(stk->leftDataCanary)        = 0xDED32DED;
@@ -244,10 +245,12 @@ int stackDtor(Stack_t* stk)
     stk->debugInf.bornFunction    = nullptr;
     stk->debugInf.bornFile        = nullptr;
     stk->debugInf.bornLine        = 0xDED32DED;
-    free(stk->fullData);
     stk->debugInf.stackStatus     = statusDead;
     stk->data                     = nullptr;
     stk->fullData                 = nullptr;
+    stk->structHash               = nullptr;
+    stk->dataHash                 = nullptr;    
+    free(stk->fullData);
     free(stk);
 
     return 0;
@@ -261,14 +264,11 @@ int stackError(Stack_t* stk)
     int errors = noErrors;
     if (stk)
     {
-        if (isnan(stk->capacity) || stk->capacity > epsiloh)
+        if (stk->capacity > epsiloh)
             errors |= capacityError;
         
         if (stk->size > epsiloh)
             errors |= sizeError;
-
-        if (!stk->data)
-            errors |= dataError;
 
         if (stk->size > stk->capacity)
             errors |= sizeAndCapacityError;
@@ -279,13 +279,17 @@ int stackError(Stack_t* stk)
         if (stk->rightCanary != 0xDEDFADE)
             errors |= rightCanaryError;
 
+        errors |= checkHash(stk);
+
+        if (!stk->data)
+            return errors |= dataError;
+
         if (*(stk->leftDataCanary)  != 0xCAFEBABE)
             errors |= leftDataCanaryError;
 
         if (*(stk->rightDataCanary) != 0xCAFED00D)
             errors |= rightDataCanaryError;
         
-        errors |= checkHash(stk);
     }
     else
         errors |= stkptrError;
@@ -323,10 +327,10 @@ void stackDumpFunc(const Stack_t* stk, int errors, int line, const char* func, c
         fprintf(dbgFile,     "    leftCanary  = %p\n",  stk->leftCanary);
         fprintf(dbgFile,     "    rightCanary = %p\n",  stk->rightCanary);
         fprintf(dbgFile,     "    structHash  = %lu\n", stk->debugInf.structHash);
-        fprintf(dbgFile,     "    dataHash    = %lu\n",   stk->debugInf.dataHash);
         
         if (stk->data)
         {
+            fprintf(dbgFile,     "    dataHash    = %lu\n",   stk->debugInf.dataHash);
             fprintf(dbgFile, "    fullData [%p] data[%p]\n    {\n", stk->fullData, stk->data);
             fprintf(dbgFile, "         leftDataCanary = %p\n", *(stk->leftDataCanary));
             for (size_t index = 0; index < stk->capacity; ++index)
@@ -436,6 +440,7 @@ int stackResize(Stack_t* stk, int param)
     stk->rightDataCanary       = (unsigned long long*) (stk->fullData + sizeof(unsigned long long) + sizeof(Elem_t) * stk->capacity);
     *(stk->leftDataCanary)     = 0xCAFEBABE;
     *(stk->rightDataCanary)    = 0xCAFED00D;
+
     stackDump(stk, errors |= stackError(stk));
 
     return errors;
