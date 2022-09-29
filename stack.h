@@ -43,6 +43,8 @@ struct DebugInf
     const char*  bornFile;
     size_t bornLine;
     StackStatus stackStatus;
+    size_t dataHash;
+    size_t structHash;
 };
 
 struct Stack_t
@@ -74,6 +76,8 @@ enum Errors
     rightDataCanaryError = 1 << 10,
     stackResizeError     = 1 << 11,
     memAllocError        = 1 << 12,
+    dataHashError        = 1 << 13,
+    structHashError      = 1 << 14,
 };
 
 const char* ErrorMessages[] = {
@@ -88,7 +92,8 @@ const char* ErrorMessages[] = {
     "Oh no, we lost right canary",
     "leftDataCanary is damaged",
     "rightDataCanary is damaged", 
-
+    "dataHash has changed",
+    "structHash has changed",
 };
 
 void arrayPoison(Elem_t*, size_t);
@@ -108,6 +113,10 @@ Elem_t stackPop(Stack_t* stk, int* errors = nullptr);
 int stackResize(Stack_t* stk, int param);
 
 void errorPrint(int errors);
+
+size_t countHash(char* key, size_t len);
+
+int checkHash(Stack_t* stk);
 //-------------------------------------------------------
 
 FILE* const dbgOpen(const char* dbgFileName)
@@ -211,6 +220,11 @@ int stackCtorFunc(Stack_t* stk, size_t capacity, const char* stkName, const char
     stackDump(stk, 0);
 
     arrayPoison(stk->data, stk->capacity);
+    size_t structHash          = countHash((char*) stk, sizeof(Stack_t));
+    size_t dataHash            = countHash((char*) stk->data, sizeof(Elem_t) * stk->capacity);
+    fprintf(DBGFILEPTR, "adsfadsfasdf %d", structHash);
+    stk->debugInf.structHash   = structHash;
+    stk->debugInf.dataHash     = dataHash;
 
     stackDump(stk, errors |= stackError(stk));
 
@@ -270,6 +284,8 @@ int stackError(Stack_t* stk)
 
         if (*(stk->rightDataCanary) != 0xCAFED00D)
             errors |= rightDataCanaryError;
+        
+        errors |= checkHash(stk);
     }
     else
         errors |= stkptrError;
@@ -305,7 +321,9 @@ void stackDumpFunc(const Stack_t* stk, int errors, int line, const char* func, c
         fprintf(dbgFile,     "    size        = %lu\n", stk->size);
         fprintf(dbgFile,     "    capacity    = %lu\n", stk->capacity);
         fprintf(dbgFile,     "    leftCanary  = %p\n",  stk->leftCanary);
-        fprintf(dbgFile,     "    rightCanary = %p\n\n",  stk->rightCanary);
+        fprintf(dbgFile,     "    rightCanary = %p\n",  stk->rightCanary);
+        fprintf(dbgFile,     "    structHash  = %lu\n", stk->debugInf.structHash);
+        fprintf(dbgFile,     "    dataHash    = %lu\n",   stk->debugInf.dataHash);
         
         if (stk->data)
         {
@@ -361,11 +379,14 @@ int stackPush(Stack_t* stk, Elem_t value)
         (stk->data)[stk->size++] = value;
     }
     
-    return stackError(stk);
+    stk->debugInf.dataHash = countHash((char*) stk->data, sizeof(Elem_t) * stk->capacity);
+    
+    return errors |= stackError(stk);
 }
 
 Elem_t stackPop(Stack_t* stk, int* errors)
 {
+
     if (int _errors = stackError(stk))
     {
         stackDump(stk, _errors);
@@ -387,6 +408,8 @@ Elem_t stackPop(Stack_t* stk, int* errors)
 
         return elem;
     }
+
+    stk->debugInf.dataHash = countHash((char*) stk->data, sizeof(Elem_t) * stk->capacity);
 
     return stk->data[0];
 }
@@ -437,3 +460,35 @@ void errorPrint(int errors)
     fprintf(DBGFILEPTR, "-------------End-of-errors----------------\n");
 }
 
+size_t countHash(char* key, size_t len)
+{
+    size_t hash = noErrors;
+
+    for (size_t i = 0; i < len; ++i) 
+        hash = 33*hash + key[i];
+
+    return hash;
+}
+
+int checkHash(Stack_t* stk)
+{
+    if (stk == nullptr) return stkptrError;
+
+    int errors = 0;
+
+    size_t oldStructHash = stk->debugInf.structHash;
+    size_t oldDataHash   = stk->debugInf.dataHash;
+
+    stk->debugInf.structHash = 0;
+    stk->debugInf.dataHash   = 0;
+    
+    if (countHash((char*) stk, sizeof(Stack_t)) != oldStructHash)
+        errors |= structHashError;
+    if (countHash((char*) stk->data, sizeof(Elem_t) * stk->capacity) != oldDataHash)
+        errors |= dataHashError;
+
+    stk->debugInf.structHash = oldStructHash;
+    stk->debugInf.dataHash   = oldDataHash;
+
+    return errors;
+}

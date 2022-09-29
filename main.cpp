@@ -7,6 +7,7 @@ int main()
     $;
     Stack_t stk3 = {};
     stackCtor(&stk3, 10);
+    stackDump(&stk3, 0);
 }
 
 
