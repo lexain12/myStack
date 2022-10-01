@@ -7,7 +7,7 @@ int main()
 {
     $;
     Stack_t stk3 = {};
-    stackCtor(&stk3, 9);
+    stackCtor(&stk3, 100);
    for (size_t index = 0; index <= 70; ++index)
    {
        stackPush(&stk3, index);
@@ -17,9 +17,6 @@ int main()
    {
        stackPop(&stk3);
    }
-   stk3.data = (Elem_t*) 2;
-   stackDump(&stk3, stackError(&stk3));
-   stackPop(&stk3);
 
 }
         

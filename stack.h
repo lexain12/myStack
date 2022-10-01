@@ -26,10 +26,10 @@ const int DefaultCapacity       = 10;
 
 const int DestructionValue      = 0xDED32DED;
 #if CANARYGUARD
-const Canary_t LeftCanary       = 0xDEADBEEF;
-const Canary_t RightCanary      = 0xDEDFADE;
-const Canary_t LeftDataCanary   = 0xCAFEBABE;
-const Canary_t RightDataCanary  = 0xCAFED00D;
+const Canary_t LeftCanary       = 0xDEADBEEFDEADBEEF;
+const Canary_t RightCanary      = 0xDEDAFADEDEDAFADE;
+const Canary_t LeftDataCanary   = 0xCAFEBABECAFEBABE;
+const Canary_t RightDataCanary  = 0xCAFED00DCAFED00D;
 #endif
 
 enum Mode 
@@ -226,8 +226,6 @@ int stackCtorFunc(Stack_t*    stk,      size_t    capacity, const char* stkName,
         dataHash                   = countHash((char*) stk->data, sizeof(Elem_t) * stk->capacity);
 #endif
     }
-    $;
-
     stk->debugInf.bornName     = stkName;
     stk->debugInf.bornFunction = funcName;
     stk->debugInf.bornFile     = fileName;
@@ -290,9 +288,6 @@ int stackError(Stack_t* stk)
     {
         if (stk->capacity     > epsiloh)
             errors |= capacityError;
-        
-        if (stk->size         > epsiloh)
-            errors |= sizeError;
 
         if (stk->size         > stk->capacity)
             errors |= sizeAndCapacityError;
@@ -362,6 +357,7 @@ void stackDumpFunc(Stack_t* stk, int errors, int line, const char* func, const c
         ErrorPrint(leftDataCanaryError,  leftDataCanary is damaged);
         ErrorPrint(rightDataCanaryError, rightDataCanary is damaged);
 #endif
+#undef ErrorPrint
 #if HASHGUARD
         ErrorPrint(dataHashError,        dataHash has changed);
         ErrorPrint(structHashError,      structHash has changed);
@@ -564,7 +560,8 @@ size_t countHash(char* key, size_t len)
     size_t hash = noErrors;
 
     for (size_t i = 0; i < len; ++i) 
-        hash = 33 * hash + key[i];
+        if (i < 120)
+            hash = 33 * hash + key[i];
 
     return hash;
 }
@@ -611,4 +608,3 @@ Canary_t* getRightDataCanary(Stack_t* stk)
     return (Canary_t*) ((char*) stk->data + stk->capacity * sizeof(Elem_t));
 }
 #endif
-
