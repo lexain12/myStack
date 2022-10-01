@@ -228,7 +228,7 @@ int stackCtorFunc(Stack_t* stk, size_t capacity, const char* stkName, const char
 #if CANARYGUARD
         char* newData = (char*) calloc(1, capacity * sizeof(Elem_t) + 2 * sizeof(Canary_t));
 #else
-        char* newData = (char*) calloc(1, capacity * sizeof(Elem_t);
+        char* newData = (char*) calloc(1, capacity * sizeof(Elem_t));
 #endif
 
         if (!newData)
@@ -285,9 +285,15 @@ int stackDtor(Stack_t* stk)
 #endif
     stk->debugInf.stackStatus     = statusDead;
     stk->data                     = nullptr;
+#if HASHGUARD
     stk->debugInf.structHash      = NULL;
     stk->debugInf.dataHash        = NULL;    
+#endif
+#if CANARYGUARD
     free(getLeftDataCanary(stk));
+#else 
+    free(stk->data);
+#endif
     stk                           = nullptr;
     
     return 0;
@@ -325,7 +331,9 @@ int stackError(Stack_t* stk)
             errors |= rightDataCanaryError;
 #endif
 
+#if HASHGUARD
         errors |= checkHash(stk);
+#endif
         
     }
     else
