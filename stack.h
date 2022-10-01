@@ -4,8 +4,8 @@
 #include "LogLib.h"
 #include <memory.h>
 
-#define CANARYGUARD 0
-#define HASHGUARD 0
+#define CANARYGUARD 1
+#define HASHGUARD 1
 
 #ifndef DBGFILENAME
 #define DBGFILENAME "debugFile.txt"
@@ -259,16 +259,15 @@ int stackDtor(Stack_t* stk)
         return errors;
     }
 
-    stk->capacity                 = DestructionValue; // base
-    stk->size                     = DestructionValue;
 #if CANARYGUARD
     *(getRightDataCanary(stk))    = DestructionValue;
     *(getLeftDataCanary(stk))     = DestructionValue;
     stk->leftCanary               = DestructionValue;
     stk->rightCanary              = DestructionValue;
 #endif
+    stk->capacity                 = DestructionValue; // base
+    stk->size                     = DestructionValue;
     stk->debugInf.stackStatus     = statusDead;
-    stk->data                     = nullptr;
 #if HASHGUARD
     stk->debugInf.structHash      = NULL;
     stk->debugInf.dataHash        = NULL;    
@@ -278,6 +277,7 @@ int stackDtor(Stack_t* stk)
 #else 
     free(stk->data);
 #endif
+    stk->data                     = nullptr;
     stk                           = nullptr;
     
     return 0;
@@ -305,6 +305,12 @@ int stackError(Stack_t* stk)
         if (stk->rightCanary != RightCanary)
             errors |= rightCanaryError;
 #endif
+
+#if HASHGUARD
+        if (checkHash(stk))
+            return errors |= checkHash(stk);
+#endif
+
         if (!stk->data)
             return errors |= dataError;
 #if CANARYGUARD
@@ -313,10 +319,6 @@ int stackError(Stack_t* stk)
 
         if (*(getRightDataCanary(stk)) != RightDataCanary)
             errors |= rightDataCanaryError;
-#endif
-
-#if HASHGUARD
-        errors |= checkHash(stk);
 #endif
         
     }
@@ -328,7 +330,6 @@ int stackError(Stack_t* stk)
 
 void stackDumpFunc(Stack_t* stk, int errors, int line, const char* func, const char* file, FILE* dbgFile)
 {
-    $;
     fprintf(dbgFile, "-----------------stackDump----------------\n");
     fprintf(dbgFile, "%s at ",     func);
     fprintf(dbgFile, "%s",         file);
@@ -476,55 +477,12 @@ Elem_t stackPop(Stack_t* stk, int* errors)
     return stk->data[0];
 }
 
-//int stackResize(Stack_t* stk, Mote isDown)
-//{
-//    int errors         = 0;
-//    size_t newCapacity = 0;
-//
-//    if (stk->capacity == 0)
-//    {
-//        char* newData = (char*) calloc(1, DefaultCapacity * sizeof(Elem_t) + 2 * sizeof(Canary_t));
-//        if (!newData) return errors |= dataError;
-//
-//        stk->data = (Elem_t*) ((char*) newData + sizeof(Canary_t));
-//        stk->capacity = DefaultCapacity;
-//    }
-//    else
-//    {
-//        if (isDown)
-//        {
-//            if (stk->size <= stk->capacity / 2 - (stk->capacity / 4) && stk->capacity > DefaultCapacity)
-//            {
-//                newCapacity /= 2;
-//            }
-//
-//        }
-//        else        newCapacity *= 2;
-//
-//        if (char* newData = (char*) realloc(getLeftDataCanary(stk), sizeof(stk->data[0]) * newCapacity + sizeof(Canary_t) * 2))
-//        {
-//            stk->data     = (Elem_t*) (newData + sizeof(Canary_t));
-//            stk->capacity = newCapacity;
-//            arrayPoison(stk->data + stk->size, stk->capacity - stk->size);
-//        }
-//        else
-//            return errors |= stackResizeError;
-//    }
-//
-//    *(getLeftDataCanary(stk))     = LeftDataCanary;
-//    *(getRightDataCanary(stk))    = RightDataCanary;
-//
-//    stk->debugInf.dataHash = countHash((char*) stk->data, sizeof(Elem_t) * stk->capacity);
-//
-//    stackDump(stk, errors |= stackError(stk));
-//
-//    return errors;
-//}
 int stackResize(Stack_t* stk, Mode mode)
  {
      if (stk == NULL) return NULL;
  
      int errors = stackError(stk);
+     if (errors) stackDump(stk, errors);
  
      size_t newCapacity = 0;
  
@@ -600,9 +558,8 @@ int stackResize(Stack_t* stk, Mode mode)
 #if HASHGUARD
      countHashes(stk); 
 #endif
- 
      errors |= stackError(stk);
-     stackDump(stk, errors);
+     if (errors) stackDump(stk, errors);
 
      return errors;
  }
@@ -628,14 +585,9 @@ int checkHash(Stack_t* stk)
     stk->debugInf.dataHash   = 0;
     
     size_t newStructHash = countHash((char*) stk, sizeof(Stack_t));
+    if (newStructHash != oldStructHash) return errors |= structHashError;
     size_t newDataHash   = countHash((char*) stk->data, sizeof(Elem_t) * stk->capacity);
-//    fprintf(DBGFILEPTR, "newDataHash %lu\n", newDataHash);
-//    fprintf(DBGFILEPTR, "newStructHash %lu\n", newStructHash);
-//    fprintf(DBGFILEPTR, "oldDataHash %lu\n", oldDataHash);
-//    fprintf(DBGFILEPTR, "oldStructHash %lu\n", oldStructHash);
-
-    if (newStructHash != oldStructHash) errors |= structHashError;
-    if (newDataHash   != oldDataHash)   errors |= dataHashError;
+    if (newDataHash   != oldDataHash) return errors |= dataHashError;
 
     stk->debugInf.structHash = oldStructHash;
     stk->debugInf.dataHash   = oldDataHash;
