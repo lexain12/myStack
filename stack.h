@@ -1,8 +1,5 @@
-#include <ctype.h>
-#include <assert.h>
 #include <math.h>
 #include "LogLib.h"
-#include <memory.h>
 
 #define CANARYGUARD 1
 #define HASHGUARD 1
@@ -19,7 +16,6 @@ void print(int param);
 void print(const char* param);
 void print(double param);
 
-// Elem_t Poison
 int getPoison(int elem);
 float getPoison(float elem);
 double getPoison(double elem);
@@ -57,11 +53,11 @@ struct DebugInf
     const char*  bornName; 
     const char*  bornFunction;
     const char*  bornFile;
-    size_t bornLine;
-    StackStatus stackStatus;
+    size_t       bornLine;
+    StackStatus  stackStatus;
 #if HASHGUARD
-    size_t dataHash;
-    size_t structHash;
+    size_t       dataHash;
+    size_t       structHash;
 #endif
 };
 
@@ -70,11 +66,9 @@ struct Stack_t
 #if CANARYGUARD
     Canary_t leftCanary = LeftCanary;
 #endif
-    size_t  size;
-    size_t  capacity; 
-
-    Elem_t* data;
-
+    size_t   size;
+    size_t   capacity; 
+    Elem_t*  data;
     DebugInf debugInf;
 #if CANARYGUARD
     Canary_t rightCanary = RightCanary;
@@ -83,7 +77,7 @@ struct Stack_t
 
 enum Errors 
 {
-    noErrors             = 0,
+    noErrors             = 0 << 0,
     stkptrError          = 1 << 0,
     capacityError        = 1 << 1,
     dataError            = 1 << 2,
@@ -130,8 +124,9 @@ void countHashes(Stack_t* stk);
 
 FILE* const dbgOpen(const char* dbgFileName)
 {
-    char buf[0] = {};
+    char buf[0]   = {};
     FILE* fileptr = fopen(dbgFileName, "w");
+
     if (fileptr != nullptr)
     {
         setvbuf(fileptr, buf, _IONBF, 0);
@@ -162,7 +157,7 @@ char getPoison(char elem)
 
 double getPoison(double elem)
 {
-    return NAN;
+    return DestructionValue;
 }
 
 void print(char param)
@@ -187,15 +182,16 @@ void print(double param)
 
 //----------------------------------------------------------------
 
-void arrayPoison(Elem_t* data, size_t limiter) // size??? const???
+void arrayPoison(Elem_t* data, size_t size) 
 {
-    for (size_t index = 0; index < limiter; ++index)
+    for (size_t index = 0; index < size; ++index)
     {
         data[index] = getPoison(data[0]);
     }
 }
 
-int stackCtorFunc(Stack_t* stk, size_t capacity, const char* stkName, const char* funcName, const char* fileName, const int line)
+int stackCtorFunc(Stack_t*    stk,      size_t    capacity, const char* stkName, const char* funcName, 
+                  const char* fileName, const int line)
 {
     int errors      = 0;
     size_t dataHash = 0;
@@ -203,9 +199,9 @@ int stackCtorFunc(Stack_t* stk, size_t capacity, const char* stkName, const char
     if (stk == nullptr) 
         return errors |= stkptrError;
    
-    capacity                   = (capacity == 0 ? 0 : (capacity / DefaultCapacity + 1) * DefaultCapacity);
-    stk->capacity              = capacity;
-    stk->size                  = 0;
+    capacity      = (capacity == 0 ? 0 : (capacity / DefaultCapacity + 1) * DefaultCapacity);
+    stk->capacity = capacity;
+    stk->size     = 0;
 
     if (capacity != 0)  
     {
@@ -227,7 +223,7 @@ int stackCtorFunc(Stack_t* stk, size_t capacity, const char* stkName, const char
 #endif
         arrayPoison(stk->data, stk->capacity);
 #if HASHGUARD
-        dataHash                = countHash((char*) stk->data, sizeof(Elem_t) * stk->capacity);
+        dataHash                   = countHash((char*) stk->data, sizeof(Elem_t) * stk->capacity);
 #endif
     }
     $;
@@ -237,6 +233,7 @@ int stackCtorFunc(Stack_t* stk, size_t capacity, const char* stkName, const char
     stk->debugInf.bornFile     = fileName;
     stk->debugInf.bornLine     = line;
     stk->debugInf.stackStatus  = statusAlive;
+
 #if HASHGUARD 
     size_t structHash          = countHash((char*) stk, sizeof(Stack_t));
     stk->debugInf.structHash   = structHash;
@@ -260,46 +257,47 @@ int stackDtor(Stack_t* stk)
     }
 
 #if CANARYGUARD
-    *(getRightDataCanary(stk))    = DestructionValue;
-    *(getLeftDataCanary(stk))     = DestructionValue;
-    stk->leftCanary               = DestructionValue;
-    stk->rightCanary              = DestructionValue;
+    *(getRightDataCanary(stk)) = DestructionValue;
+    *(getLeftDataCanary(stk))  = DestructionValue;
+    stk->leftCanary            = DestructionValue;
+    stk->rightCanary           = DestructionValue;
 #endif
-    stk->capacity                 = DestructionValue; // base
-    stk->size                     = DestructionValue;
-    stk->debugInf.stackStatus     = statusDead;
+    stk->capacity              = DestructionValue; // base
+    stk->size                  = DestructionValue;
+    stk->debugInf.stackStatus  = statusDead;
 #if HASHGUARD
-    stk->debugInf.structHash      = NULL;
-    stk->debugInf.dataHash        = NULL;    
+    stk->debugInf.structHash   = NULL;
+    stk->debugInf.dataHash     = NULL;    
 #endif
 #if CANARYGUARD
     free(getLeftDataCanary(stk));
 #else 
     free(stk->data);
 #endif
-    stk->data                     = nullptr;
-    stk                           = nullptr;
+    stk->data                  = nullptr;
+    stk                        = nullptr;
     
     return 0;
 }
 
 int stackError(Stack_t* stk)
 {
-    size_t epsiloh = -400;
+    size_t epsiloh = -1;
+    epsiloh       /=  2;
 
-    int errors = noErrors;
+    int errors     = noErrors;
     if (stk)
     {
-        if (stk->capacity > epsiloh)
+        if (stk->capacity     > epsiloh)
             errors |= capacityError;
         
-        if (stk->size > epsiloh)
+        if (stk->size         > epsiloh)
             errors |= sizeError;
 
-        if (stk->size > stk->capacity)
+        if (stk->size         > stk->capacity)
             errors |= sizeAndCapacityError;
 #if CANARYGUARD 
-        if (stk->leftCanary != LeftCanary)
+        if (stk->leftCanary  != LeftCanary)
             errors |= leftCanaryError;
 
         if (stk->rightCanary != RightCanary)
@@ -372,62 +370,59 @@ void stackDumpFunc(Stack_t* stk, int errors, int line, const char* func, const c
     }
     else
         fprintf(dbgFile, "(no errors) ");
+
     fprintf(dbgFile, "Name = %s ", stk->debugInf.bornName); 
-    fprintf(dbgFile, "at function %s at file %s(%lu)\n", stk->debugInf.bornFunction, stk->debugInf.bornFile, stk->debugInf.bornLine);
+    fprintf(dbgFile, "at function %s at file %s(%lu)\n", stk->debugInf.bornFunction,
+                                                         stk->debugInf.bornFile, 
+                                                         stk->debugInf.bornLine);
 
-    if (stk)
+    if (!stk)
     {
-        fprintf(dbgFile,     "{                 \n");
-        fprintf(dbgFile,     "    size        = %lu\n", stk->size);
-        fprintf(dbgFile,     "    capacity    = %lu\n", stk->capacity);
-#if CANARYGUARD
-        fprintf(dbgFile,     "    leftCanary  = %p\n",  stk->leftCanary);
-        fprintf(dbgFile,     "    rightCanary = %p\n",  stk->rightCanary);
-#endif
-#if HASHGUARD
-        fprintf(dbgFile,     "    structHash  = %lu\n", stk->debugInf.structHash);
-#endif
-        
-        if (stk->data)
-        {
-#if HASHGUARD
-            fprintf(dbgFile,     "    dataHash    = %lu\n",   stk->debugInf.dataHash);
-#endif
-            fprintf(dbgFile, "    data[%p]\n    {\n", stk->data);
-#if CANARYGUARD
-            fprintf(dbgFile, "         leftDataCanary = %p\n", *(getLeftDataCanary(stk)));
-#endif
-            for (size_t index = 0; index < stk->capacity; ++index)
-            {
-                if (stk->data[index] == getPoison(stk->data[0]) || isnan(stk->data[index]))
-                {
-                    fprintf(dbgFile, "         [%lu] = POISONED\n", index);
-                }
-                else {
-                    fprintf(dbgFile, "        *[%lu] = ", index);
-                    print(stk->data[index]);
-                    fprintf(dbgFile, "\n");
-                }
-            }
-#if CANARYGUARD
-                    fprintf(dbgFile, "         rightDataCanary = %p\n", *(getRightDataCanary(stk)));
-#endif
-                    fprintf(dbgFile, "    }\n");
-        }
-        else
-        {
-            $;
-            fprintf(dbgFile, "fullData [%p] NULLPTR\n {", stk->data);
-        }
-
-            
-        fprintf(dbgFile, "}\n");
-    }
-    else
         fprintf(dbgFile, "Wrong ptr on stack\n");
+        return ;
+    }
 
+    fprintf(dbgFile,     "{                 \n");
+    fprintf(dbgFile,     "    size        = %lu\n", stk->size);
+    fprintf(dbgFile,     "    capacity    = %lu\n", stk->capacity);
+#if CANARYGUARD
+    fprintf(dbgFile,     "    leftCanary  = %p\n",  stk->leftCanary);
+    fprintf(dbgFile,     "    rightCanary = %p\n",  stk->rightCanary);
+#endif
+#if HASHGUARD
+    fprintf(dbgFile,     "    structHash  = %lu\n", stk->debugInf.structHash);
+#endif
+    
+    if (!stk->data)
+    {
+        fprintf(dbgFile, "fullData [%p] NULLPTR\n {", stk->data);
+        return;
+    }
+#if HASHGUARD
+    fprintf(dbgFile,     "    dataHash    = %lu\n",   stk->debugInf.dataHash);
+#endif
+    fprintf(dbgFile, "    data[%p]\n    {\n", stk->data);
+#if CANARYGUARD
+    fprintf(dbgFile, "         leftDataCanary = %p\n", *(getLeftDataCanary(stk)));
+#endif
+    for (size_t index = 0; index < stk->capacity; ++index)
+    {
+        if (stk->data[index] == getPoison(stk->data[0]))
+        {
+            fprintf(dbgFile, "         [%lu] = POISONED\n", index);
+        }
+        else {
+            fprintf(dbgFile, "        *[%lu] = ", index);
+            print(stk->data[index]);
+            fprintf(dbgFile, "\n");
+        }
+    }
+#if CANARYGUARD
+    fprintf(dbgFile, "         rightDataCanary = %p\n", *(getRightDataCanary(stk)));
+#endif
+    fprintf(dbgFile, "    }\n");
+    fprintf(dbgFile, "}\n");
     fprintf(dbgFile, "-----------stackDump-End------------------\n");
-
 }
 
 int stackPush(Stack_t* stk, Elem_t value)
@@ -450,7 +445,7 @@ int stackPush(Stack_t* stk, Elem_t value)
 
 Elem_t stackPop(Stack_t* stk, int* errors)
 {
-    if (int errors_ = stackError(stk)) // loh
+    if (int errors_ = stackError(stk)) 
     {
         fprintf(DBGFILEPTR, "stackPop %lu\n", errors_);
         stackDump(stk, errors_);
@@ -459,8 +454,7 @@ Elem_t stackPop(Stack_t* stk, int* errors)
     else
     {
         stackResize(stk, DOWN);
-        stk->size--; // --stk->size
-        Elem_t elem = stk->data[stk->size];
+        Elem_t elem = stk->data[--stk->size];
         stk->data[stk->size] = getPoison(elem);
 
         if (errors) *errors |= errors_;
@@ -516,7 +510,7 @@ int stackResize(Stack_t* stk, Mode mode)
      if (stk->capacity == 0 && mode == UP)
      {
 #if CANARYGUARD
-         newData = (char*) calloc(1, 2 * sizeof(Canary_t) + newCapacity * sizeof(Elem_t));
+         newData = (char*) calloc(1, newCapacity * sizeof(Elem_t) + 2 * sizeof(Canary_t));
 #else
          newData = (char*) calloc(1, newCapacity * sizeof(Elem_t));
 #endif
@@ -579,17 +573,17 @@ int checkHash(Stack_t* stk)
 {
     int errors = 0;
 
-    size_t oldStructHash = stk->debugInf.structHash;
-    size_t oldDataHash   = stk->debugInf.dataHash;
+    size_t oldStructHash     = stk->debugInf.structHash;
+    size_t oldDataHash       = stk->debugInf.dataHash;
     stk->debugInf.structHash = 0;
     stk->debugInf.dataHash   = 0;
-    
+
     size_t newStructHash = countHash((char*) stk, sizeof(Stack_t));
     if (newStructHash != oldStructHash) return errors |= structHashError;
+    stk->debugInf.structHash = oldStructHash;
+
     size_t newDataHash   = countHash((char*) stk->data, sizeof(Elem_t) * stk->capacity);
     if (newDataHash   != oldDataHash) return errors |= dataHashError;
-
-    stk->debugInf.structHash = oldStructHash;
     stk->debugInf.dataHash   = oldDataHash;
 
     return errors;

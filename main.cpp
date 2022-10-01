@@ -8,19 +8,19 @@ int main()
     $;
     Stack_t stk3 = {};
     stackCtor(&stk3, 9);
-    stackDtor(&stk3);
-    stackDtor(&stk3);
    for (size_t index = 0; index <= 70; ++index)
    {
        stackPush(&stk3, index);
    }
+   stackDump(&stk3, 0);
    for (size_t index = 0; index <= 60; ++index)
    {
        stackPop(&stk3);
    }
-   *((char*) stk3.data - sizeof(Canary_t)) = 0x0000000;
-   stk3.data[0] = -2;
+   stk3.data = (Elem_t*) 2;
+   stackDump(&stk3, stackError(&stk3));
    stackPop(&stk3);
+
 }
         
 
