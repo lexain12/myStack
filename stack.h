@@ -4,8 +4,8 @@
 #include "LogLib.h"
 #include <memory.h>
 
-#define CANARYGUARD 1
-#define HASHGUARD 1
+#define CANARYGUARD 0
+#define HASHGUARD 0
 
 #ifndef DBGFILENAME
 #define DBGFILENAME "debugFile.txt"
@@ -97,22 +97,6 @@ enum Errors
     rightDataCanaryError = 1 << 10,
     dataHashError        = 1 << 11,
     structHashError      = 1 << 12,
-};
-
-const char* ErrorMessages[] = { // make it better
-    "No errors :)",
-    "Wrong ptr on structure with stack",
-    "Wrong capacity",
-    "No pointer on data (stack with elements)",
-    "Size bigger than capacity => problem with stack size",
-    "Can't resize the stack",
-    "Can't allocate memory",
-    "Left canary died :( RIP",
-    "Oh no, we lost right canary",
-    "leftDataCanary is damaged",
-    "rightDataCanary is damaged", 
-    "dataHash has changed",
-    "structHash has changed",
 };
 
 void arrayPoison(Elem_t*, size_t);
@@ -301,7 +285,7 @@ int stackDtor(Stack_t* stk)
 
 int stackError(Stack_t* stk)
 {
-    size_t epsiloh = (size_t) -1 / 2;
+    size_t epsiloh = -400;
 
     int errors = noErrors;
     if (stk)
@@ -467,12 +451,12 @@ Elem_t stackPop(Stack_t* stk, int* errors)
 {
     if (int errors_ = stackError(stk)) // loh
     {
+        fprintf(DBGFILEPTR, "stackPop %lu\n", errors_);
         stackDump(stk, errors_);
         if (errors) *errors = errors_;
     }
     else
     {
-
         stackResize(stk, DOWN);
         stk->size--; // --stk->size
         Elem_t elem = stk->data[stk->size];
@@ -623,26 +607,6 @@ int stackResize(Stack_t* stk, Mode mode)
      return errors;
  }
 
-void errorPrint(int errors)
-{
-    int curError = 1;
-
-    size_t index = 0;
-
-    fprintf(DBGFILEPTR, "-----------------Errors-------------------\n");
-    while (curError <= errors)
-    {
-        if (curError & errors)
-        {
-            fprintf(DBGFILEPTR, "    Error[%d] - %s\n", index, ErrorMessages[index]);
-        }
-
-        curError <<= 1;
-        index += 1;
-    }
-
-    fprintf(DBGFILEPTR, "-------------End-of-errors----------------\n");
-}
 #if HASHGUARD
 size_t countHash(char* key, size_t len)
 {
@@ -671,7 +635,7 @@ int checkHash(Stack_t* stk)
 //    fprintf(DBGFILEPTR, "oldStructHash %lu\n", oldStructHash);
 
     if (newStructHash != oldStructHash) errors |= structHashError;
-    if (newDataHash   != oldDataHash)   errors |= oldDataHash;
+    if (newDataHash   != oldDataHash)   errors |= dataHashError;
 
     stk->debugInf.structHash = oldStructHash;
     stk->debugInf.dataHash   = oldDataHash;
