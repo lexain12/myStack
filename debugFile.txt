@@ -1,52 +1,592 @@
 -----------------stackDump----------------
-stackCtorFunc at stack.h(197);
-stack[0x16ce3b748] status: Alive (no errors) Name = (null) at function (null) at file (null)(0)
+stackCtorFunc at stack.h(265);
+stack[0x16dcff760] status: Alive (no errors) Name = &stk3 at function main at file main.cpp(18)
 {                 
     size        = 0
-    capacity    = 0
+    capacity    = 20
     leftCanary  = 0xdeadbeef
     rightCanary = 0xdedfade
-    structHash  = 0
-fullData [0x0] NULLPTR
- {}
+    structHash  = 6842922136971752448
+    dataHash    = 3952619739999036124
+    data[0x6000037bc128]
+    {
+         leftDataCanary = 0xcafebabe
+         [0] = POISONED
+         [1] = POISONED
+         [2] = POISONED
+         [3] = POISONED
+         [4] = POISONED
+         [5] = POISONED
+         [6] = POISONED
+         [7] = POISONED
+         [8] = POISONED
+         [9] = POISONED
+         [10] = POISONED
+         [11] = POISONED
+         [12] = POISONED
+         [13] = POISONED
+         [14] = POISONED
+         [15] = POISONED
+         [16] = POISONED
+         [17] = POISONED
+         [18] = POISONED
+         [19] = POISONED
+         rightDataCanary = 0xcafed00d
+    }
+}
 -----------stackDump-End------------------
 -----------------stackDump----------------
-stackCtorFunc at stack.h(223);
-stack[0x16ce3b748] status: Alive (no errors) Name = stk3 at function main at file main.cpp(9)
+main at main.cpp(22);
+stack[0x16dcff760] status: Alive (no errors) Name = &stk3 at function main at file main.cpp(18)
 {                 
-    size        = 0
-    capacity    = 0
+    size        = 3
+    capacity    = 20
     leftCanary  = 0xdeadbeef
     rightCanary = 0xdedfade
-    structHash  = 0
-fullData [0x0] NULLPTR
- {}
+    structHash  = 5213918519572017315
+    dataHash    = 18127832946107150320
+    data[0x6000037bc128]
+    {
+         leftDataCanary = 0xcafebabe
+        *[0] = 7
+        *[1] = 7
+        *[2] = 7
+         [3] = POISONED
+         [4] = POISONED
+         [5] = POISONED
+         [6] = POISONED
+         [7] = POISONED
+         [8] = POISONED
+         [9] = POISONED
+         [10] = POISONED
+         [11] = POISONED
+         [12] = POISONED
+         [13] = POISONED
+         [14] = POISONED
+         [15] = POISONED
+         [16] = POISONED
+         [17] = POISONED
+         [18] = POISONED
+         [19] = POISONED
+         rightDataCanary = 0xcafed00d
+    }
+}
 -----------stackDump-End------------------
 -----------------stackDump----------------
-stackCtorFunc at stack.h(228);
-stack[0x16ce3b748] status: Alive (ERROR: 4)
+main at main.cpp(39);
+stack[0x16dcff760] status: Alive (no errors) Name = &stk3 at function main at file main.cpp(18)
+{                 
+    size        = 19
+    capacity    = 20
+    leftCanary  = 0xdeadbeef
+    rightCanary = 0xdedfade
+    structHash  = 14972643300482981555
+    dataHash    = 4581771144127112624
+    data[0x6000037bc128]
+    {
+         leftDataCanary = 0xcafebabe
+        *[0] = 7
+        *[1] = 7
+        *[2] = 7
+        *[3] = 7
+        *[4] = 7
+        *[5] = 7
+        *[6] = 7
+        *[7] = 7
+        *[8] = 7
+        *[9] = 7
+        *[10] = 7
+        *[11] = 7
+        *[12] = 7
+        *[13] = 7
+        *[14] = 7
+        *[15] = 7
+        *[16] = 7
+        *[17] = 7
+        *[18] = 7
+         [19] = POISONED
+         rightDataCanary = 0xcafed00d
+    }
+}
+-----------stackDump-End------------------
+-----------------stackDump----------------
+stackResize at stack.h(613);
+stack[0x16dcff760] status: Alive (no errors) Name = &stk3 at function main at file main.cpp(18)
+{                 
+    size        = 20
+    capacity    = 40
+    leftCanary  = 0xdeadbeef
+    rightCanary = 0xdedfade
+    structHash  = 16904182096293399878
+    dataHash    = 508228342830745832
+    data[0x6000024bc0b8]
+    {
+         leftDataCanary = 0xcafebabe
+        *[0] = 7
+        *[1] = 7
+        *[2] = 7
+        *[3] = 7
+        *[4] = 7
+        *[5] = 7
+        *[6] = 7
+        *[7] = 7
+        *[8] = 7
+        *[9] = 7
+        *[10] = 7
+        *[11] = 7
+        *[12] = 7
+        *[13] = 7
+        *[14] = 7
+        *[15] = 7
+        *[16] = 7
+        *[17] = 7
+        *[18] = 7
+        *[19] = 7
+         [20] = POISONED
+         [21] = POISONED
+         [22] = POISONED
+         [23] = POISONED
+         [24] = POISONED
+         [25] = POISONED
+         [26] = POISONED
+         [27] = POISONED
+         [28] = POISONED
+         [29] = POISONED
+         [30] = POISONED
+         [31] = POISONED
+         [32] = POISONED
+         [33] = POISONED
+         [34] = POISONED
+         [35] = POISONED
+         [36] = POISONED
+         [37] = POISONED
+         [38] = POISONED
+         [39] = POISONED
+         rightDataCanary = 0xcafed00d
+    }
+}
+-----------stackDump-End------------------
+-----------------stackDump----------------
+main at main.cpp(46);
+stack[0x16dcff760] status: Alive (no errors) Name = &stk3 at function main at file main.cpp(18)
+{                 
+    size        = 25
+    capacity    = 40
+    leftCanary  = 0xdeadbeef
+    rightCanary = 0xdedfade
+    structHash  = 14189176067293841323
+    dataHash    = 16141830037295683764
+    data[0x6000024bc0b8]
+    {
+         leftDataCanary = 0xcafebabe
+        *[0] = 7
+        *[1] = 7
+        *[2] = 7
+        *[3] = 7
+        *[4] = 7
+        *[5] = 7
+        *[6] = 7
+        *[7] = 7
+        *[8] = 7
+        *[9] = 7
+        *[10] = 7
+        *[11] = 7
+        *[12] = 7
+        *[13] = 7
+        *[14] = 7
+        *[15] = 7
+        *[16] = 7
+        *[17] = 7
+        *[18] = 7
+        *[19] = 7
+        *[20] = 7
+        *[21] = 7
+        *[22] = 7
+        *[23] = 7
+        *[24] = 7
+         [25] = POISONED
+         [26] = POISONED
+         [27] = POISONED
+         [28] = POISONED
+         [29] = POISONED
+         [30] = POISONED
+         [31] = POISONED
+         [32] = POISONED
+         [33] = POISONED
+         [34] = POISONED
+         [35] = POISONED
+         [36] = POISONED
+         [37] = POISONED
+         [38] = POISONED
+         [39] = POISONED
+         rightDataCanary = 0xcafed00d
+    }
+}
+-----------stackDump-End------------------
+-----------------stackDump----------------
+main at main.cpp(47);
+stack[0x16dcff760] status: Alive (no errors) Name = &stk3 at function main at file main.cpp(18)
+{                 
+    size        = 26
+    capacity    = 40
+    leftCanary  = 0xdeadbeef
+    rightCanary = 0xdedfade
+    structHash  = 13646174861493929612
+    dataHash    = 16672514375363011856
+    data[0x6000024bc0b8]
+    {
+         leftDataCanary = 0xcafebabe
+        *[0] = 7
+        *[1] = 7
+        *[2] = 7
+        *[3] = 7
+        *[4] = 7
+        *[5] = 7
+        *[6] = 7
+        *[7] = 7
+        *[8] = 7
+        *[9] = 7
+        *[10] = 7
+        *[11] = 7
+        *[12] = 7
+        *[13] = 7
+        *[14] = 7
+        *[15] = 7
+        *[16] = 7
+        *[17] = 7
+        *[18] = 7
+        *[19] = 7
+        *[20] = 7
+        *[21] = 7
+        *[22] = 7
+        *[23] = 7
+        *[24] = 7
+        *[25] = 7
+         [26] = POISONED
+         [27] = POISONED
+         [28] = POISONED
+         [29] = POISONED
+         [30] = POISONED
+         [31] = POISONED
+         [32] = POISONED
+         [33] = POISONED
+         [34] = POISONED
+         [35] = POISONED
+         [36] = POISONED
+         [37] = POISONED
+         [38] = POISONED
+         [39] = POISONED
+         rightDataCanary = 0xcafed00d
+    }
+}
+-----------stackDump-End------------------
+-----------------stackDump----------------
+main at main.cpp(49);
+stack[0x16dcff760] status: Alive (no errors) Name = &stk3 at function main at file main.cpp(18)
+{                 
+    size        = 25
+    capacity    = 40
+    leftCanary  = 0xdeadbeef
+    rightCanary = 0xdedfade
+    structHash  = 14189176067293841323
+    dataHash    = 16141830037295683764
+    data[0x6000024bc0b8]
+    {
+         leftDataCanary = 0xcafebabe
+        *[0] = 7
+        *[1] = 7
+        *[2] = 7
+        *[3] = 7
+        *[4] = 7
+        *[5] = 7
+        *[6] = 7
+        *[7] = 7
+        *[8] = 7
+        *[9] = 7
+        *[10] = 7
+        *[11] = 7
+        *[12] = 7
+        *[13] = 7
+        *[14] = 7
+        *[15] = 7
+        *[16] = 7
+        *[17] = 7
+        *[18] = 7
+        *[19] = 7
+        *[20] = 7
+        *[21] = 7
+        *[22] = 7
+        *[23] = 7
+        *[24] = 7
+         [25] = POISONED
+         [26] = POISONED
+         [27] = POISONED
+         [28] = POISONED
+         [29] = POISONED
+         [30] = POISONED
+         [31] = POISONED
+         [32] = POISONED
+         [33] = POISONED
+         [34] = POISONED
+         [35] = POISONED
+         [36] = POISONED
+         [37] = POISONED
+         [38] = POISONED
+         [39] = POISONED
+         rightDataCanary = 0xcafed00d
+    }
+}
+-----------stackDump-End------------------
+-----------------stackDump----------------
+main at main.cpp(52);
+stack[0x16dcff760] status: Alive (no errors) Name = &stk3 at function main at file main.cpp(18)
+{                 
+    size        = 23
+    capacity    = 40
+    leftCanary  = 0xdeadbeef
+    rightCanary = 0xdedfade
+    structHash  = 15275178478893664745
+    dataHash    = 14683441548938860028
+    data[0x6000024bc0b8]
+    {
+         leftDataCanary = 0xcafebabe
+        *[0] = 7
+        *[1] = 7
+        *[2] = 7
+        *[3] = 7
+        *[4] = 7
+        *[5] = 7
+        *[6] = 7
+        *[7] = 7
+        *[8] = 7
+        *[9] = 7
+        *[10] = 7
+        *[11] = 7
+        *[12] = 7
+        *[13] = 7
+        *[14] = 7
+        *[15] = 7
+        *[16] = 7
+        *[17] = 7
+        *[18] = 7
+        *[19] = 7
+        *[20] = 7
+        *[21] = 7
+        *[22] = 7
+         [23] = POISONED
+         [24] = POISONED
+         [25] = POISONED
+         [26] = POISONED
+         [27] = POISONED
+         [28] = POISONED
+         [29] = POISONED
+         [30] = POISONED
+         [31] = POISONED
+         [32] = POISONED
+         [33] = POISONED
+         [34] = POISONED
+         [35] = POISONED
+         [36] = POISONED
+         [37] = POISONED
+         [38] = POISONED
+         [39] = POISONED
+         rightDataCanary = 0xcafed00d
+    }
+}
+-----------stackDump-End------------------
+-----------------stackDump----------------
+stackResize at stack.h(613);
+stack[0x16dcff760] status: Alive (no errors) Name = &stk3 at function main at file main.cpp(18)
+{                 
+    size        = 15
+    capacity    = 20
+    leftCanary  = 0xdeadbeef
+    rightCanary = 0xdedfade
+    structHash  = 8404517980273933645
+    dataHash    = 14637341446937032768
+    data[0x6000024bc0b8]
+    {
+         leftDataCanary = 0xcafebabe
+        *[0] = 7
+        *[1] = 7
+        *[2] = 7
+        *[3] = 7
+        *[4] = 7
+        *[5] = 7
+        *[6] = 7
+        *[7] = 7
+        *[8] = 7
+        *[9] = 7
+        *[10] = 7
+        *[11] = 7
+        *[12] = 7
+        *[13] = 7
+        *[14] = 7
+         [15] = POISONED
+         [16] = POISONED
+         [17] = POISONED
+         [18] = POISONED
+         [19] = POISONED
+         rightDataCanary = 0xcafed00d
+    }
+}
+-----------stackDump-End------------------
+-----------------stackDump----------------
+stackResize at stack.h(613);
+stack[0x16dcff760] status: Alive (no errors) Name = &stk3 at function main at file main.cpp(18)
+{                 
+    size        = 7
+    capacity    = 10
+    leftCanary  = 0xdeadbeef
+    rightCanary = 0xdedfade
+    structHash  = 4918691933354205546
+    dataHash    = 4261402153569916146
+    data[0x6000006bc1c8]
+    {
+         leftDataCanary = 0xcafebabe
+        *[0] = 7
+        *[1] = 7
+        *[2] = 7
+        *[3] = 7
+        *[4] = 7
+        *[5] = 7
+        *[6] = 7
+         [7] = POISONED
+         [8] = POISONED
+         [9] = POISONED
+         rightDataCanary = 0xcafed00d
+    }
+}
+-----------stackDump-End------------------
+-----------------stackDump----------------
+stackPop at stack.h(462);
+stack[0x16dcff760] status: Alive (ERROR: 536)
 -----------------Errors-------------------
-    Error[4] - Wrong capacity
+ERROR [sizeError] Bad Size of stack
+ERROR [sizeAndCapacityError] Size bigger than capacity => problem with stack size
+ERROR [leftDataCanaryError] leftDataCanary is damaged
 -------------End-of-errors----------------
-Name = stk3 at function main at file main.cpp(9)
+Name = &stk3 at function main at file main.cpp(18)
 {                 
-    size        = 0
-    capacity    = 0
+    size        = 18446744073709551615
+    capacity    = 10
     leftCanary  = 0xdeadbeef
     rightCanary = 0xdedfade
-    structHash  = 7972972173961262548
-fullData [0x0] NULLPTR
- {}
+    structHash  = 16083702921664263611
+    dataHash    = 14252475635911167598
+    data[0x6000006bc1c8]
+    {
+         leftDataCanary = 0xded32dedcafebabe
+         [0] = POISONED
+         [1] = POISONED
+         [2] = POISONED
+         [3] = POISONED
+         [4] = POISONED
+         [5] = POISONED
+         [6] = POISONED
+         [7] = POISONED
+         [8] = POISONED
+         [9] = POISONED
+         rightDataCanary = 0xcafed00d
+    }
+}
 -----------stackDump-End------------------
 -----------------stackDump----------------
-main at main.cpp(10);
-stack[0x16ce3b748] status: Alive (no errors) Name = stk3 at function main at file main.cpp(9)
+stackPop at stack.h(462);
+stack[0x16dcff760] status: Alive (ERROR: 536)
+-----------------Errors-------------------
+ERROR [sizeError] Bad Size of stack
+ERROR [sizeAndCapacityError] Size bigger than capacity => problem with stack size
+ERROR [leftDataCanaryError] leftDataCanary is damaged
+-------------End-of-errors----------------
+Name = &stk3 at function main at file main.cpp(18)
 {                 
-    size        = 0
-    capacity    = 0
+    size        = 18446744073709551615
+    capacity    = 10
     leftCanary  = 0xdeadbeef
     rightCanary = 0xdedfade
-    structHash  = 7972972173961262548
-fullData [0x0] NULLPTR
- {}
+    structHash  = 16083702921664263611
+    dataHash    = 14252475635911167598
+    data[0x6000006bc1c8]
+    {
+         leftDataCanary = 0xded32dedcafebabe
+         [0] = POISONED
+         [1] = POISONED
+         [2] = POISONED
+         [3] = POISONED
+         [4] = POISONED
+         [5] = POISONED
+         [6] = POISONED
+         [7] = POISONED
+         [8] = POISONED
+         [9] = POISONED
+         rightDataCanary = 0xcafed00d
+    }
+}
+-----------stackDump-End------------------
+-----------------stackDump----------------
+stackPop at stack.h(462);
+stack[0x16dcff760] status: Alive (ERROR: 536)
+-----------------Errors-------------------
+ERROR [sizeError] Bad Size of stack
+ERROR [sizeAndCapacityError] Size bigger than capacity => problem with stack size
+ERROR [leftDataCanaryError] leftDataCanary is damaged
+-------------End-of-errors----------------
+Name = &stk3 at function main at file main.cpp(18)
+{                 
+    size        = 18446744073709551615
+    capacity    = 10
+    leftCanary  = 0xdeadbeef
+    rightCanary = 0xdedfade
+    structHash  = 16083702921664263611
+    dataHash    = 14252475635911167598
+    data[0x6000006bc1c8]
+    {
+         leftDataCanary = 0xded32dedcafebabe
+         [0] = POISONED
+         [1] = POISONED
+         [2] = POISONED
+         [3] = POISONED
+         [4] = POISONED
+         [5] = POISONED
+         [6] = POISONED
+         [7] = POISONED
+         [8] = POISONED
+         [9] = POISONED
+         rightDataCanary = 0xcafed00d
+    }
+}
+-----------stackDump-End------------------
+-----------------stackDump----------------
+stackPop at stack.h(462);
+stack[0x16dcff760] status: Alive (ERROR: 536)
+-----------------Errors-------------------
+ERROR [sizeError] Bad Size of stack
+ERROR [sizeAndCapacityError] Size bigger than capacity => problem with stack size
+ERROR [leftDataCanaryError] leftDataCanary is damaged
+-------------End-of-errors----------------
+Name = &stk3 at function main at file main.cpp(18)
+{                 
+    size        = 18446744073709551615
+    capacity    = 10
+    leftCanary  = 0xdeadbeef
+    rightCanary = 0xdedfade
+    structHash  = 16083702921664263611
+    dataHash    = 14252475635911167598
+    data[0x6000006bc1c8]
+    {
+         leftDataCanary = 0xded32dedcafebabe
+         [0] = POISONED
+         [1] = POISONED
+         [2] = POISONED
+         [3] = POISONED
+         [4] = POISONED
+         [5] = POISONED
+         [6] = POISONED
+         [7] = POISONED
+         [8] = POISONED
+         [9] = POISONED
+         rightDataCanary = 0xcafed00d
+    }
+}
 -----------stackDump-End------------------
