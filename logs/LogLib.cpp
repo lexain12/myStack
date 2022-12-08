@@ -26,7 +26,7 @@ void logprint(double param)
     fprintf(LOGFILEPTR, "%lg", param);
 }
 
-FILE* const logOpen(const char* logFileName)
+FILE* logOpen(const char* logFileName)
 {
     char buf[0] = {};
     FILE* filePtr = fopen(logFileName, "a");
