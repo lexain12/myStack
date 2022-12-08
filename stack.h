@@ -1,8 +1,8 @@
 #include <math.h>
 #include "LogLib.h"
 
-#define CANARYGUARD 1
-#define HASHGUARD 1
+#define CANARYGUARD 0
+#define HASHGUARD 0
 
 #ifndef DBGFILENAME
 #define DBGFILENAME "debugFile.txt"
@@ -24,7 +24,7 @@ char* getPoison(char* elem);
 
 const int DefaultCapacity       = 10;
 
-const int DestructionValue      = 0xDED32DED;
+const size_t DestructionValue      = 0xDED32DED;
 #if CANARYGUARD
 const Canary_t LeftCanary       = 0xDEADBEEF;
 const Canary_t RightCanary      = 0xDEDFADE;
@@ -38,9 +38,9 @@ enum Mode
     UP   = 2,
 };
 
-FILE* const dbgOpen(const char* filename); // trash
+FILE* dbgOpen(const char* filename); // trash
 
-FILE* const DBGFILEPTR = dbgOpen(DBGFILENAME);
+FILE* DBGFILEPTR = dbgOpen(DBGFILENAME);
 
 enum StackStatus
 {
@@ -122,7 +122,13 @@ Canary_t* getRightDataCanary(Stack_t* stk);
 void countHashes(Stack_t* stk);
 //-------------------------------------------------------
 
-FILE* const dbgOpen(const char* dbgFileName)
+void print(FILE* file, double param)
+{
+    fprintf(file, "%lg", param);
+}
+
+
+FILE* dbgOpen(const char* dbgFileName)
 {
     char buf[0]   = {};
     FILE* fileptr = fopen(dbgFileName, "w");
@@ -137,47 +143,32 @@ FILE* const dbgOpen(const char* dbgFileName)
 
 int getPoison(int elem)
 {
-    return DestructionValue;
+    elem += 1;
+    return (int) DestructionValue;
 }
 
 float getPoison(float elem)
 {
+    elem += 1;
     return NAN;
 }
 
 char* getPoison(char* elem)
 {
+    elem += 1;
    return (char*) 13;
 }
 
 char getPoison(char elem)
 {
+    elem += 1;
     return '\0';
 }
 
 double getPoison(double elem)
 {
+    elem += 1;
     return DestructionValue;
-}
-
-void print(char param)
-{
-    fprintf(DBGFILEPTR, "%c", param);
-}
-
-void print(int param)
-{
-    fprintf(DBGFILEPTR, "%d", param);
-}
-
-void print(const char* param)
-{
-    fprintf(DBGFILEPTR, "%s", param);
-}
-
-void print(double param)
-{
-    fprintf(DBGFILEPTR, "%lg", param);
 }
 
 //----------------------------------------------------------------
@@ -194,7 +185,6 @@ int stackCtorFunc(Stack_t*    stk,      size_t    capacity, const char* stkName,
                   const char* fileName, const int line)
 {
     int errors      = 0;
-    size_t dataHash = 0;
     
     if (stk == nullptr) 
         return errors |= stkptrError;
@@ -223,6 +213,7 @@ int stackCtorFunc(Stack_t*    stk,      size_t    capacity, const char* stkName,
 #endif
         arrayPoison(stk->data, stk->capacity);
 #if HASHGUARD
+        size_t dataHash = 0;
         dataHash                   = countHash((char*) stk->data, sizeof(Elem_t) * stk->capacity);
 #endif
     }
@@ -231,7 +222,7 @@ int stackCtorFunc(Stack_t*    stk,      size_t    capacity, const char* stkName,
     stk->debugInf.bornName     = stkName;
     stk->debugInf.bornFunction = funcName;
     stk->debugInf.bornFile     = fileName;
-    stk->debugInf.bornLine     = line;
+    stk->debugInf.bornLine     = (size_t) line;
     stk->debugInf.stackStatus  = statusAlive;
 
 #if HASHGUARD 
@@ -282,7 +273,7 @@ int stackDtor(Stack_t* stk)
 
 int stackError(Stack_t* stk)
 {
-    size_t epsiloh = -1;
+    size_t epsiloh = (size_t) -1;
     epsiloh       /=  2;
 
     int errors     = noErrors;
@@ -413,7 +404,7 @@ void stackDumpFunc(Stack_t* stk, int errors, int line, const char* func, const c
         }
         else {
             fprintf(dbgFile, "        *[%lu] = ", index);
-            print(stk->data[index]);
+            print(dbgFile, stk->data[index]);
             fprintf(dbgFile, "\n");
         }
     }
@@ -447,7 +438,7 @@ Elem_t stackPop(Stack_t* stk, int* errors)
 {
     if (int errors_ = stackError(stk)) 
     {
-        fprintf(DBGFILEPTR, "stackPop %lu\n", errors_);
+        fprintf(DBGFILEPTR, "stackPop %d\n", errors_);
         stackDump(stk, errors_);
         if (errors) *errors = errors_;
     }
@@ -473,7 +464,7 @@ Elem_t stackPop(Stack_t* stk, int* errors)
 
 int stackResize(Stack_t* stk, Mode mode)
  {
-     if (stk == NULL) return NULL;
+     if (stk == NULL) return 0;
  
      int errors = stackError(stk);
      if (errors) stackDump(stk, errors);

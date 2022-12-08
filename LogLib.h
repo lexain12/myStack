@@ -1,5 +1,3 @@
-#pragma once
-
 #include <stdio.h>
 #include <ctype.h>
 #include <iostream>
@@ -11,13 +9,14 @@
 
 void logprint(char param);
 void logprint(int param);
-void logprint(const char* param);
 void logprint(double param);
+void logprint(const char* param);
 
-FILE* const logOpen(const char*);
-extern FILE* const LOGFILEPTR;
+FILE* logOpen(const char*);
 
-#define $ do { fprintf(LOGFILEPTR, "FILE: %s, Function: %s, line: %d\n", __FILE__, __func__, __LINE__); } while(0)
+extern FILE* LOGFILEPTR;
 
-#define $$(param) do { logprint(#param); logprint(" Return value = "); logprint(param); logprint('\n'); } while(0)
+#define $ fprintf(LOGFILEPTR, "FILE: %s, Function: %s, line: %d\n", __FILE__, __func__, __LINE__);
+
+#define $$(param) param; logprint(#param); logprint(param); logprint('\n'); \
 
